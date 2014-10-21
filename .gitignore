@@ -1,0 +1,14 @@
+AdvElDes.pdf
+*.aux
+*.lof
+*.log
+*.lol
+*.lot
+*.out
+*.toc
+*-converted-to.*
+*.synctex.gz*
+
+
+*.DS_STORE
+thumbs.db
