@@ -94,3 +94,16 @@ Uses propagation times from data sheets and standard values.
 Uses actual wire geometries, including parasitics.
 By far the slowest, but the only really accurate timing simulation.
 
+\subsection{Clock Distribution Schemes}
+
+\paragraph{Common-clock distribution timing}
+Common (third-party) clock used by driver and receiver. OK for up to \SI{200}{\mega\hertz}. 
+
+\paragraph{Source synchronous / Incident}
+Driver sends clock and data. 
+Source synchronous: driver delays data slightly. 
+Incident clocking: receiver delays data.
+
+\paragraph{Embedded clocking}
+Clock is embedded in data (e.g. Manchester coding).
+Saving on number of lines, but increase of frequency.
