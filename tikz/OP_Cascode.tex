@@ -1,0 +1,11 @@
+\begin{circuitikz}[scale=0.8,transform shape]
+	\draw 
+		(0,0) node[npn] (t2) {$T_2$}
+		(0,-2) node[npn] (t1) {$T_1$}
+		(0,3) node[anchor=south] {$U_b$} to[R=$R_C$] (t2.C) (0,1) -- (1.5,1) node[anchor=west] {$U_a$}
+		(t2.E) -- (t1.C)
+		(t1.E) -- (0,-3) node[rground] {}
+		(-2,-2) node[anchor=east] {$U_e$} -- (t1.B)
+		(-2,0) node[anchor=east] {$U_0$} -- (t2.B)
+	;
+\end{circuitikz}

@@ -1,0 +1,10 @@
+\begin{circuitikz}[scale=0.8,transform shape]
+	\draw 
+		(0,0) node[op amp,yscale=-1] (opamp) {}
+		(-4,-1) node[anchor=east] {$V_p$} to[R=$R_3$] (-2,-1) |- (opamp.-)
+		(-2,-1) to (-2,-2) to[R=$R_4$] (2,-2) |- (opamp.out)
+		(-4,1) node[anchor=east] {$V_n$} to[R=$R_1$] (-2,1) |- (opamp.+)
+		(-2,1) to[R=$R_2$] (-2,3) node[anchor=south] {$Vcc$}
+		(opamp.out) -- (3,0) node[anchor=west] {$Vout$}
+	;		
+\end{circuitikz}
