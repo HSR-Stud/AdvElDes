@@ -558,3 +558,143 @@
 				\item Make your PCB design so that it can be configured to various solutions (split or common GND plane, various kinds of short-lays between planes). Test will determine the most favourable layout concept. 
 			\end{itemize}
 			Application Example see Slides 62 to 65 from Week 2. 
+			
+	\subsection{Decoupling}
+		It is important to reduce fluctuations on the power supply line in order to reduce emissions and guarantee correct circuit operation. The fluctuations of the power lines are due to: 
+		\begin{itemize}
+			\item Internal switching noise of the ICs.
+			\item Vertical shoot-through of output drivers. 
+			\item High charging/discharging currents of capacitive loads 
+		\end{itemize}	
+		$\rightarrow$ Noisy currents emit magnetic fields!\\
+		$\rightarrow$ Noisy volltages emit electric fields!	
+		
+		\begin{table}[h!]
+		\centering
+		\begin{tabular}{|m{0.45\textwidth}|m{0.35\textwidth}|}
+				\multicolumn{2}{c}{\textbf{Possibilities to reduce emissions from the power supply circuits:}}
+			\\
+			\hline
+				\begin{itemize}
+					\item Reduce the amplitude of the voltage fluctuations: 
+					\begin{itemize}
+						\item Place decoupling (bypass) capacitors between VCC and GND. 
+						\item Add one for every power pin of every IC and even some more. 
+					\end{itemize}
+					\item Reduce current loop areas: 
+					\begin{itemize}
+						\item Reduce connection length between ICs and decaps. 
+						\item In multilayer PCBs, place GND and VCC planes adjacent. 
+						\item Take benefit from mutual inductance in the connection lines to the decap to reduce their voltage drop (impedance). This is best achieved in multilayer boards with GND and VCC planes. 
+					\end{itemize}
+				\end{itemize}
+			& 
+				\begin{center}\includegraphics[width=0.35\textwidth]{images/Decaps.png}\end{center}  
+				\begin{center}\includegraphics[width=0.35\textwidth]{images/DecapsInd.png}\end{center}  
+			\\	
+			\hline
+			\end{tabular}
+		\end{table}	
+
+
+		\begin{table}[h!]
+		\centering
+		\begin{tabular}{|m{0.45\textwidth}|m{0.35\textwidth}|}
+				\multicolumn{2}{c}{\textbf{Capacitor Series Resonance}}
+			\\
+			\hline
+				\begin{itemize}
+					\item The ESL and the C form a series resonant circuits with $\omega_{res} = \frac{1}{\sqrt{LC}}$
+
+					\item Above the resonance frequence the capacitor behaves like an inductor!
+					\item ESL depends on the capacitor case type and size, therefore: 
+					\begin{itemize}
+						\item Minimize PCB trace length (inductance) to decoupling capacitors as this adds to the ESL. 
+						\item In multilayer PCBs, keep GND and VCC layers at a short distance to the top to reduce vias lengths. 
+					\end{itemize}
+					\setlength{\itemsep}{-4pt}
+					\item Rule of Thumb: 
+					\item[] 1 cm of thin wire (0.5 mm diameter) or 0.25 mm wide PCB trace has an L of 7 - 10 nH. 
+					\item[] Therefore use smaller components with shorter leads. 
+					\item[] Example: 
+					\item[] 100 nF THT $\rightarrow$ $f_res$ = 8.2 MHz
+					\item[] 100 nF SMD $\rightarrow$ $f_res$ = 16 MHz
+				\end{itemize}
+			& 
+				\begin{center}\includegraphics[width=0.35\textwidth]{images/EquivalentCircuit.png}\end{center}  
+				\begin{center}\includegraphics[width=0.35\textwidth]{images/CapImpedance.png}\end{center}  
+			\\	
+			\hline
+			\end{tabular}
+		\end{table}	
+		
+		\begin{table}[h!]
+		\centering
+		\begin{tabular}{|m{0.45\textwidth}|m{0.35\textwidth}|}
+				\multicolumn{2}{c}{\textbf{Reduce external wiring}}
+			\\
+			\hline
+				\begin{itemize}
+					\item Reduce additional L due to PCB traces that add to the capacitor's ESL. 
+					\item Reduce area of the loop formed by the capacitor and the IC. 
+				\end{itemize}
+			& 
+				\begin{center}\includegraphics[width=0.15\textwidth]{images/BadTrace.png}\end{center}  
+				\begin{center}\includegraphics[width=0.25\textwidth]{images/GoodTrace.png}\end{center}  
+			\\	
+			\hline
+			\end{tabular}
+		\end{table}	
+		
+		\begin{table}[h!]
+		\centering
+		\begin{tabular}{|m{0.45\textwidth}|m{0.35\textwidth}|}
+				\multicolumn{2}{c}{\textbf{Oscillator circuits}}
+			\\
+			\hline
+				\begin{itemize}
+					\item Reduce the area of the oscillator circuit
+					\item Keep connections short
+					\item Keep noise from GND layer out of the oscillator circuit. 
+				\end{itemize}
+			& 
+				\begin{center}\includegraphics[width=0.25\textwidth]{images/Oszi1.png}\end{center}  
+				\begin{center}\includegraphics[width=0.25\textwidth]{images/Oszi2.png}\end{center} 
+				\begin{center}\includegraphics[width=0.25\textwidth]{images/Oszi3.png}\end{center}   
+			\\	
+			\hline
+			\end{tabular}
+		\end{table}	
+		
+
+		\begin{table}[h!]
+		\centering
+		\begin{tabular}{|m{0.45\textwidth}|m{0.35\textwidth}|}
+				\multicolumn{2}{c}{\textbf{How to choose decoupling capacitors}}
+			\\
+			\hline
+				\begin{itemize}
+					\item Use MLCC (multilayer ceramic) capacitors: X7R $\rightarrow$ low loss, compact size
+					\item Use the smallest possible SMD case $\rightarrow$ lower equivalent series inductance
+					\item Commonly used values: 1nF, 10nF, 100nF
+				\end{itemize}
+			& 
+				\begin{center}\includegraphics[width=0.25\textwidth]{images/Oszi1.png}\end{center}  
+				\begin{center}\includegraphics[width=0.25\textwidth]{images/Oszi2.png}\end{center} 
+				\begin{center}\includegraphics[width=0.25\textwidth]{images/Oszi3.png}\end{center}   
+			\\	
+			\hline
+				\multicolumn{2}{c}{\textbf{Paralleling decoupling capacitors}}
+			\\
+			\hline
+				\begin{itemize}
+					\item Idea: Above its $\omega_{res}$ a single capacitor has an increasing Z $\rightarrow$ reduce this Z at higher frequencies with a smaller C in parallel. 
+					\item The risk: The equivalent circuit is now of $4^{th}$ order and $Z_{TOT}(\infty)$ has 2 zeros and 3 poles. Network theory says that they alternate on the frequency axis. Therefore, between the series resonance of each single capacitor we have a frequency where Z becomes very high. 
+				\end{itemize}
+			& 
+	
+
+			\\	
+			\hline
+			\end{tabular}
+		\end{table}	
