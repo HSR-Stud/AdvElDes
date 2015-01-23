@@ -277,7 +277,7 @@
 			\item Every signal has its own return path. Typically the return path finds its way in the GND plane just under the signal trace. Voiding or Splitting the plane forces the return path to take a detour. 
 			\item Forward and backward path form a loop. Increasing the loop area inevitably increases its HF radiation (loop antenna).
 			\item Planes having a HF voltage difference act as a dipole antenna! 
-			\item Do nto void a reference plane just to route a signal, always think of the return paths!
+			\item Do not void a reference plane just to route a signal, always think of the return paths!
 			\item See slide 41 from Week 2 for bad examples of GND planes!
 		\end{itemize}
 
@@ -311,7 +311,7 @@
 				\multicolumn{2}{c}{\textbf{Electromagnetic field radiated by small current loop and small dipole antenna}}
 			\\
 			\hline
-				In the main radiating direction, a PCB trace carrying a current $I$ and forming a loop of area $A$ generates an electromagnetic field at a point distand $R$ in the order of:\newline
+				In the main radiating direction, a PCB trace carrying a current $I$ and forming a loop of area $A$ generates an electromagnetic field at a point distant $R$ in the order of:\newline
 				\begin{equation}
 					E \sim \frac{k^2 I A}{4\pi} \sqrt{\frac{\mu}{\varepsilon}}\frac{1}{R}
 				\end{equation}
@@ -388,5 +388,165 @@
 				 \begin{center}\includegraphics[width=0.35\textwidth]{images/GNDGuard.png}\end{center}  		
 			\\
 			\hline
+			\multicolumn{2}{c}{\textbf{A widespread solution for I/O sections}}
+			\\
+			\hline
+				\begin{itemize}
+					\item Shunt HF noise captured by I/O cables to the metal cabinet with the shortest possible path.  
+					\item Always provide a nearby signal return path also in the I/O cable. 
+				\end{itemize}
+			& 
+				 \begin{center}\includegraphics[width=0.35\textwidth]{images/IOSections.png}\end{center}  		
+			\\
+			\hline
 			\end{tabular}
 		\end{table}	
+		
+		\textbf{A few situations where we may still want to split the planes:}
+		\begin{itemize}
+			\item We want to control where a particular return current travels or where it should never go
+			\begin{itemize}
+				\item Very high impedance analog circuits
+				\item Very small currents (sensor signal conditioning circuits) at DC or very low frequencies
+				\item Outputs connected to very noisy, high power (electromechanical) equipment
+			\end{itemize}
+			\item Isolation needed (safety):Optocoupler circuits
+			\item Reduction of parasitic C to GND in filters, line transformers
+			\item Consider connecting the different reference planes with a number of small capacitors. They do not influence the low frequency behaviour but help reduce the HF emissions due to differential mode noise between the planes. 
+		\end{itemize}
+		
+		\subsubsection{Mixed Signal Circuits}
+				\begin{table}[h!]
+				\centering
+				\begin{tabular}{|m{0.45\textwidth}|m{0.35\textwidth}|}
+					\hline
+						\begin{itemize}
+							\item Manufacturers of mixed signal components often suggest to implement split GND planes (AGND, DGND) in order to avoid having digital noise on the analog signal. 
+							\item Analog Devices suggest connecting the two GND via anti-parallel Schottky diodes or ferrite beads. 
+						\end{itemize}
+					& 
+						 \begin{center}\includegraphics[width=0.35\textwidth]{images/AGND_DGND.png}\end{center}  
+						 \begin{center}\includegraphics[width=0.35\textwidth]{images/Schottky.png}\end{center}		
+					\\
+					\hline
+						\begin{itemize}
+							\item Many A/D, D/A converters have separated analog and digital GND supply pins, generally this is only for practical reasons, because internal bonding has $L \neq 0$ and therefore with a single GND pin, digital noise would couple into the analog section. 
+							\item Externally we can tie them together at AGND in most cases.  
+						\end{itemize}
+					& 
+						 \begin{center}\includegraphics[width=0.35\textwidth]{images/MixedSignal1.png}\end{center}  		
+					\\
+					\hline
+					\end{tabular}
+				\end{table}	
+				
+				\begin{table}[h!]
+				\centering
+				\begin{tabular}{|m{0.45\textwidth}|m{0.35\textwidth}|}
+
+						\multicolumn{2}{c}{\textbf{Mixed signal ICs with low digital currents}}
+					\\
+					\hline
+						\begin{itemize}
+							\item Connect AGND and DGND pins together to the analog reference plane (the IC is located completely in the analog part, see upper Figure), or place it over a star connection point between AGND and DGND (if we have only one ADC, see lower Figure).
+							\item Further decouple the AVCC with a ferrite bead and its own decoupling capacitor. 
+							\item To further reduce noise consider adding a digital buffer IC on the digital interface
+							\begin{itemize}
+								\item Decouple noise from the digital bus, the buffer is connected to DGND
+								\item The buffer reduces loading (current drawn) on the digital outputs of the ADC. Use series resistors to further reduce the current. 
+							\end{itemize}
+						\end{itemize}
+					& 
+						 \begin{center}\includegraphics[width=0.35\textwidth]{images/MixedSignal2.png}\end{center}  
+						 \begin{center}\includegraphics[width=0.35\textwidth]{images/MixedSignal3.png}\end{center}
+					\\	
+					\hline
+						\multicolumn{2}{c}{\textbf{Mixed signal ICs with high digital currents and/or multicard systems}}	
+					\\
+					\hline
+						\begin{itemize}
+							\item Connect AGND and DGND pins to the respective reference plane (upper Figure). 
+							\item This scheme works only for ICs designs with well isolated analog/digital circuits. 
+							\item Tie AGND and DGND together in a star point. In multicard systems this can be at the backplane (lower Figure).
+						\end{itemize}
+					& 
+						 \begin{center}\includegraphics[width=0.35\textwidth]{images/MixedSignal4.png}\end{center}  
+						 \begin{center}\includegraphics[width=0.35\textwidth]{images/MixedSignal5.png}\end{center}	
+					\\
+					\hline
+					\end{tabular}
+				\end{table}	
+				
+				
+				
+				\begin{table}[h!]
+				\centering
+				\begin{tabular}{|m{0.45\textwidth}|m{0.35\textwidth}|}
+
+						\multicolumn{2}{c}{\textbf{Sampling Clock Circuits}}
+					\\
+					\hline
+						\begin{itemize}
+							\item Jitter on the sampling clock severely deteriorates the SNR of an ADC. 
+							\item SNR of an ideal ADC (infinite resolution) exposed to a clock jitter, where $f$ is the clock frequency and $t_j$ is the sampling clock jitter is given in equation below. 
+							\item Noise superposed to a clock signal translates into clock jitter. 
+							\item The best solution is to create the clock locally (in the analog low noise section). 
+							\item Use a low jitter oscillator such as a quartz crystal and be beware of programmable (PLL) oscillators. 
+							\item If the clock comes from the digital section, try to minimize its superposed noise against AGND by transmitting it over a differential line (originating directly at the oscillator) an/or using isolation (transformer optocoupler). 
+						\end{itemize}
+						\begin{equation}
+							SNR = 20log\left(\frac{1}{2\pi f t_j}\right)
+						\end{equation}
+					& 
+						 \begin{center}\includegraphics[width=0.35\textwidth]{images/Clock.png}\end{center}  
+					\\	
+					\hline
+					\end{tabular}
+				\end{table}	
+			
+				\begin{table}[h!]
+				\centering
+				\begin{tabular}{|m{0.45\textwidth}|m{0.35\textwidth}|}
+
+						\multicolumn{2}{c}{\textbf{More suggestions}}
+					\\
+					\hline
+						\begin{itemize}
+							\item Split the power VCC plane: AVCC, DVCC
+							\item Generally avoid splitting the GND plane! Try instead to carefully partitioning the components into analog and digital areas on the PCB. 
+							\item Noisy digital return currents flow directly under the respective signal traces and do not propagate inside the analog section. 
+							\item Do not route digital signal traces in the analog zone! 
+							\item In case of doubt you can always design a PCB with split grounds, but provide means for connecting the two planes together at intervals of $\lambda/10$ with jumpers or zero ohm resistors. Laboratory tests will tell which solution is better. 
+						\end{itemize}
+					& 
+						\begin{center}\includegraphics[width=0.35\textwidth]{images/PlaneSplit.png}\end{center}  
+					\\	
+					\hline
+						\multicolumn{2}{c}{\textbf{How to cross a plane split with signals}}
+					\\
+					\hline
+						\begin{itemize}
+							\item Always provide a nearby path for the return signal. 
+							\item It is a good place to use a common mode choke, an optocoupler or signal filters. 
+							\item Another solution is to provide a bridge between the two planes (see Figure)
+						\end{itemize}
+					& 
+						\begin{center}\includegraphics[width=0.35\textwidth]{images/CrossSplitPlane.png}\end{center}  
+					\\	
+					\hline
+					\end{tabular}
+				\end{table}	
+				
+			\subsubsection{Conclusions}
+			\begin{itemize}
+				\item Make on single reference plane!
+				\item Read the recommendations of the manufacturers, purchase EvalKits and see how their PCB layout is made. 
+				\item Be sceptical about AppNotes dating prior to 2003, suggesting a partitioned ground plane. Exceptions: 
+				\begin{itemize}
+					\item Noisy I/O sections
+					\item Low frequency analog input sections with low noise or low leakage current requirements. 
+				\end{itemize}
+				\item It is more important to carefully partition the components and avoid placing digital signal lines inside the analog zone. 
+				\item Make your PCB design so that it can be configured to various solutions (split or common GND plane, various kinds of short-lays between planes). Test will determine the most favourable layout concept. 
+			\end{itemize}
+			Application Example see Slides 62 to 65 from Week 2. 
