@@ -753,3 +753,20 @@
 			\hline
 			\end{tabular}
 		\end{table}
+	\clearpage
+	\subsection{Transmission Lines}
+		\begin{itemize}
+			\setlength{\itemsep}{-4pt}
+			\item A piece of PCB trace with a length z has a resistance of $R = \rho \frac{z}{A}$, where $A$ is the diameter area. 
+			\item Current flow produces a temperature rise therefore the trace widths must be dimensioned accordingly!
+			\item The capacitance formed by two copper areas on adjacent PCB layers is 37 $pF/cm^2$. 
+			\item The self inductance of a PCB trace when there is no copper underneath is 
+			\item[] $L = 0.00002\cdot l \left(ln\left(\frac{2l}{w+h}\right)+ 0.2235\left(\frac{w+h}{l}\right)+0.5\right) [\mu H]$, where l is the length, w the width and h the height of the copper trace. 
+			\item Two parallel PCB trace have a mutual inductance M, if the mutual coupling is good (reference plane carrying the return current is very close to the signal trace) then (L-M) is very small and the voltage $\Delta V$ is very small, therefore using continuous reference planes adjacent to each signal plane is a good reason! 
+		\end{itemize}
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.5\textwidth]{images/PCBTrace.png}
+			\caption{Equivalent Scheme of a PCB Trace}
+			\label{Fig:EqSchemePCBTrace}
+		\end{figure}
