@@ -763,10 +763,81 @@
 			\item The self inductance of a PCB trace when there is no copper underneath is 
 			\item[] $L = 0.00002\cdot l \left(ln\left(\frac{2l}{w+h}\right)+ 0.2235\left(\frac{w+h}{l}\right)+0.5\right) [\mu H]$, where l is the length, w the width and h the height of the copper trace. 
 			\item Two parallel PCB trace have a mutual inductance M, if the mutual coupling is good (reference plane carrying the return current is very close to the signal trace) then (L-M) is very small and the voltage $\Delta V$ is very small, therefore using continuous reference planes adjacent to each signal plane is a good reason! 
+			\item There is a forward $u_a$ and a reflected signal $u_b$
+			\item[] $\frac{|u_a|}{|i_a|} = \frac{|u_b|}{|i_b|} = \sqrt{\frac{L'}{C'}} = Z_0$
+			\item The propagation velocity within the transmission line is given by
+			\item[] $v = \frac{c}{\sqrt{\varepsilon_r \mu_r}} \approx \frac{1}{\sqrt{L' C'}}$
+			\item In order to avoid reflection the load impedance $Z_L$ should be equivalent to the characteristic impedance $Z_0$
+			\item[] $Z_0 = Z_L$
+			\item If $Z_L \neq Z_0$ there is a reflection, which is given by the reflection coefficient
+			\item[] $r = \frac{u_a}{u_b}$
+			\item[] $r = \frac{Z_L - Z_0}{Z_L + Z_0}$
+			\item[] $Z_L = Z_0 \frac{1+r}{1-r}$
 		\end{itemize}
 		\begin{figure}[h]
 			\centering
-			\includegraphics[width=0.5\textwidth]{images/PCBTrace.png}
+			\includegraphics[width=0.4\textwidth]{images/PCBTrace.png}
 			\caption{Equivalent Scheme of a PCB Trace}
 			\label{Fig:EqSchemePCBTrace}
 		\end{figure}
+		
+		
+		\begin{table}[h!]
+		\centering
+		\begin{tabular}{|m{0.45\textwidth}|m{0.35\textwidth}|}
+				\multicolumn{2}{c}{\textbf{Transmission Lines on PCB}}
+			\\
+			\hline
+				\begin{itemize}
+					\item A junction between two transmission lines with different characteristic impedances generates reflections therefore be careful with width changes, connectors etc. 
+					\item An unloaded ($Z_L = \infty$) trace generates reflections ($r = 1$).
+					\item Splitting a trace in two ore more can generate reflections. 
+					\item Sharp corners generate reflections too. 
+				\end{itemize}
+			&
+					\begin{center}\includegraphics[width=0.35\textwidth]{images/Junction.png}\end{center} 
+					\begin{center}\includegraphics[width=0.2\textwidth]{images/Stub.png}\end{center} 
+					\begin{center}\includegraphics[width=0.35\textwidth]{images/ParallelTraces.png}\end{center} 
+					\begin{center}\includegraphics[width=0.15\textwidth]{images/Corner.png}\end{center} 
+			\\
+			\hline
+			\end{tabular}
+		\end{table}
+		
+		
+		\begin{table}[h!]
+		\centering
+		\begin{tabular}{|m{0.45\textwidth}|m{0.35\textwidth}|}
+				\multicolumn{2}{c}{\textbf{Microstrip and Stripline}}
+			\\
+			\hline
+				\begin{itemize}
+					\setlength{\itemsep}{-4pt}
+					\item Microstrip: 
+					\item[] The signal trace runs over a continuous GND plane. 
+				\end{itemize}
+				\begin{equation}
+					Z_0 = \frac{87}{\sqrt{\varepsilon_r + 1.41}} ln\left(\frac{5.98h}{0.8w + t}\right) \qquad [\Omega]		
+				\end{equation}
+				\begin{equation}
+					v = \frac{1}{1.017\sqrt{0.457 \varepsilon_r + 0.67}} \qquad[ft/ns]	
+				\end{equation}
+				\begin{itemize}
+					\setlength{\itemsep}{-4pt}
+					\item Stripline: 
+					\item[]The signal trace is sandwiched between two GND planes. 
+				\end{itemize}
+			\begin{equation}
+					Z_0 = \frac{60}{\sqrt{\varepsilon_r}} ln\left(\frac{4h}{0.67\pi w \left(0.8 + \frac{t}{w}\right)}\right) \qquad[\Omega]		
+				\end{equation}
+				\begin{equation}
+					v = \frac{1}{1.017\sqrt{\varepsilon_r}} \qquad[ft/ns]	
+				\end{equation}
+			&
+					\begin{center}\includegraphics[width=0.35\textwidth]{images/Microstrip.png}\end{center} 
+					\begin{center}\includegraphics[width=0.2\textwidth]{images/Stripline.png}\end{center} 
+ 
+			\\
+			\hline
+			\end{tabular}
+		\end{table}
