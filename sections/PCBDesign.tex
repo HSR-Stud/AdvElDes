@@ -68,7 +68,7 @@
 			\label{Fig:Waveguide}
 		\end{figure}
 		\begin{equation}
-			f_c = \frac{\lambda_c}{2}
+			f_c = \frac{\lambda_c}{2} = \frac{c}{2a}
 		\end{equation}
 		with 
 		\begin{equation}
@@ -78,7 +78,7 @@
 		\begin{itemize}
 			\item Waveguide properties can be used to block signal propagation through the apertures inside the PCB, which is accomplished by overlaying guard rings (top layer) and reference planes (internal layer) over a distance of $\lambda/10$ or more in order to create waveguides of this depth. 
 			\item Place as many blind vias on the waveguide's side walls as possible
-			\item Keep aperture of the waveguides so that < $\lambda/2$ (at the highest signal frequency)
+			\item Keep aperture of the waveguides so that  $< \lambda/2$ (at the highest signal frequency)
 			\item Do not pass signal traces inside these waveguides
 		\end{itemize}
 		\begin{figure}[h]
@@ -110,7 +110,7 @@
 			\item Optocouplers are a valid alternative for crossing the boundary of a shielded zone.
 			\item Add series L/R to I/O signals going to connectors and avoid GND area under these components to reduce input/output stray capacitance on these elements. 
 			\item Add capacitors to the 0V plane and keep these connections very short. Use vias directly to the reference plane. 
-			\item At frequencies above 10 MHz replace inductors with ferrite beads. 
+			\item At frequencies above 100 MHz replace inductors with ferrite beads. 
 			\item Consider using common mode chokes. 
 			\item Whenever possible, group all connectors on the same side of the PCB. 
 			\item Keep internal signals away from the connector area. 
@@ -761,7 +761,7 @@
 			\item Current flow produces a temperature rise therefore the trace widths must be dimensioned accordingly!
 			\item The capacitance formed by two copper areas on adjacent PCB layers is 37 $pF/cm^2$. 
 			\item The self inductance of a PCB trace when there is no copper underneath is 
-			\item[] $L = 0.00002\cdot l \left(ln\left(\frac{2l}{w+h}\right)+ 0.2235\left(\frac{w+h}{l}\right)+0.5\right) [\mu H]$, where l is the length, w the width and h the height of the copper trace. 
+			\item[] $L = 0.0002\cdot l \left(ln\left(\frac{2l}{w+h}\right)+ 0.2235\left(\frac{w+h}{l}\right)+0.5\right) [\mu H]$, where l is the length, w the width and h the height of the copper trace. 
 			\item Two parallel PCB trace have a mutual inductance M, if the mutual coupling is good (reference plane carrying the return current is very close to the signal trace) then (L-M) is very small and the voltage $\Delta V$ is very small, therefore using continuous reference planes adjacent to each signal plane is a good reason! 
 			\item There is a forward $u_a$ and a reflected signal $u_b$
 			\item[] $\frac{|u_a|}{|i_a|} = \frac{|u_b|}{|i_b|} = \sqrt{\frac{L'}{C'}} = Z_0$
@@ -839,5 +839,152 @@
  
 			\\
 			\hline
+				\textbf{Differential Lines} & \textbf{Skin Effect}
+			\\
+			\hline
+				\begin{itemize}
+					\setlength{\itemsep}{-4pt}
+					\item[] Two different $Z_0$ if traces are driven in... 
+					\item \textbf{Common Mode}
+					\item[] $Z_{0even}$ The value is similar to that of a single microstrip line and is independent from the distance between the traces. 
+					\item \textbf{Differential Mode}
+					\item[] $Z_{0odd}$ The value increases with increasing distance between the two traces. 
+				\end{itemize}
+			&
+				As a consequence of Maxwells equations, AC current tends to distribute on the outer region of a conductor. The skin depth $\delta$ is the depth into the conductor by which the current density has decreased to 1/e ($\approx 37 \%$) of what is was. 
+				\begin{equation}
+					\delta = \sqrt{\frac{2}{\omega \mu_0 \mu_r \sigma}}
+				\end{equation}			
+ 				Since the AC current uses a smaller conductor section, R increases due to the skin effect with $R \approx \sqrt{\omega}$.
+			\\
+			\hline
 			\end{tabular}
 		\end{table}
+
+	\subsection{Parasitic PCB effects}
+		\begin{table}[h!]
+			\centering
+			\begin{tabular}{|m{0.45\textwidth}|m{0.35\textwidth}|}
+			\hline
+				\textbf{Parasitic PCB effects} & \textbf{Guard Rings} 
+			\\
+			\hline
+				Depends on the PCB materials, environmental factors (humidity, dirt, PCB layout and assembly). The static effects affect the DC operation of the circuit and come from leakage resistance. The dynamic effects affect the AC operation and come from stray capacitance, dielectric absorption and high frequency losses.\newline
+				Workarounds\newline
+				Good PCB layout, component mounting, coating, use of superior material (Rogers) and guard rings. 
+			&
+				The idea is to completely surround sensitive nodes with conductors that can readily sink stray currents and maintain the guard conductors at the exact potential of the sensitive node. Important: Never leave guard rings floating and repeat guard ring on all layers for THT circuits. 
+			\\
+			\hline
+			\end{tabular}
+		\end{table}
+		
+
+	\subsection{Crosstalk, Ground Bounce}
+		Crosstalk is the unintended interference between nearby signal traces, there are several reasons for crosstalk between two or more lines: 
+		\begin{itemize}
+			\setlength{\itemsep}{-4pt}
+			\item Inductive Coupling
+			\item Capacitive Coupling 
+			\item Sharing of a common signal return path with non-zero impedance. 
+		\end{itemize}
+		\subsubsection{Inductive Coupling}
+			The magnetic field lines generated by the source trace induce a voltage on the victim trace $u_{victim} = M \frac{di_{source}}{dt}$ on the victim trace, the coupled signal propagates in both directions with opposite polarity. In the victim trace the pulses contributed by each single coupling point arrive at the same time at the far end (B), while they arrive at different times at the near end (A), therefore in B we see a sharp pulse with strong amplitude whereas in A we see a broad pulse. 
+			\begin{table}[h!]
+				\centering
+				\begin{tabular}{m{0.45\textwidth} m{0.35\textwidth} }
+				
+					\begin{center}\includegraphics[width=0.45\textwidth]{images/InductiveCoupling1.png}\end{center}  
+				&
+					\begin{center}\includegraphics[width=0.35\textwidth]{images/InductiveCoupling2.png}\end{center} 
+				\\
+			
+				\end{tabular}
+			\end{table}	
+			The inductive cross coupling is proportional to $\frac{1}{1+\left(\frac{d}{h}\right)^2}$, where d is the distance from one trace to the other and h is the 	thickness of the FR4. 
+		
+		\subsubsection{Capacitive Coupling}
+			On the victim trace the coupled signal propagates in both directions with the same polarity and the pulses contributed by each single coupling point arrive at the same time at the far end (B) while they arrive at different times at A, therefore in B we see a sharp pulse with strong amplitude whereas in A we see  a broad pulse. We must provide a good termination in A to avoid that the coupled signal gets reflected back into the victim trace. When a solid reference plane is missing, inductive coupling prevails. 
+			\begin{center}\includegraphics[width=0.35\textwidth]{images/CapacitiveCoupling.png}\end{center} 
+
+		\subsubsection{Common signal return path with non-zero impedance}
+			GND noise can translate to output voltage noise of other circuits if they share a comon return path with non-zero impedance.\\
+			\begin{itemize}
+				\setlength{\itemsep}{-4pt}
+				\item Use uninterrupted GND planes
+				\item Avoid sharing the same GND via by more than one component. 
+			\end{itemize}
+			\begin{center}\includegraphics[width=0.35\textwidth]{images/CommonGNDVia.png}\end{center} 	
+			
+		\subsubsection{How to reduce Crosstalk}
+				\begin{itemize}
+					\setlength{\itemsep}{-4pt}
+					\item Do not run traces parallel over long distances. 
+					\item Reduce number of layer changes. 
+					\item Use differential signalling.
+					\item Use a continuous reference plane adjacent to each signal layer. 
+					\item Use guard traces. 
+					\item etc. 
+				\end{itemize}
+				\begin{center}\includegraphics[width=0.35\textwidth]{images/GuardTrace.png}\end{center} 		
+				
+		\subsubsection{GND Bounces}
+			Outputs that should not change show ground bounces when other outputs switch, the input buffers see an in put change due to ground bounce, even if the input signal is not changing. \\
+			Reduce it by: 
+			\begin{itemize}
+				\setlength{\itemsep}{-4pt}
+				\item Reduce output slew rate (slower logic family).
+				\item Use IC cases with smaller L and more GND pins. 
+				\item Do not share vias to connect multiple IC's to GND. 
+				\item Reduce impedance of connections to the GND plane. 
+			\end{itemize}
+			
+		\subsubsection{Differential Signaling}
+			\begin{itemize}
+				\setlength{\itemsep}{-4pt}
+				\item Cancels common mode noise. 
+				\item Are insensitive to GND noise and non-zero GND impedance. 
+				\item Generate less emissions in case of a non optimal GND plane since the return path is not travelling through GND. 
+				\item Do not run a trace very close to a differential pair as this could unbalance the pair. 
+			\end{itemize}
+			
+		\subsubsection{Transmission Lines - Termination}
+			Provide a load impedance at the end of a transmission line that is equal to its $Z_0$ as this will result in no reflections. Extend the possibility to use fast signal rise/fall times also on longer connections.\\
+			There are two types: Series and Parallel. $\rightarrow$ See slides for those terminations (Page 49-51, Week 3).
+			
+		\subsubsection{Transmission Lines - Vias}
+			\begin{itemize}
+				\setlength{\itemsep}{-4pt}
+				\item Try to avoid changing layer with high speed signals whenever possible.
+				\item If a via cant be avoided, dont foget to assure an uninterrupted return path. 
+			\end{itemize}
+			\begin{center}\includegraphics[width=0.35\textwidth]{images/TransmissionLineVias.png}\end{center} 
+			
+	\subsection{Clock Distribution}
+		\subsubsection{Clock Skew}
+		Clock skew refers to a situation where the clock signal to a synchronous logic circuit does not arrive at the same time to all IC's clock inputs, which leads to a delay in the arrival time of the clock signal. \\
+		Prevent it by: 
+		\begin{itemize}
+				\setlength{\itemsep}{-4pt}
+				\item Place all clock inputs in close proximity. 
+				\item Place clock source at centre and distribute the clock with a star topology. 
+				\item Use clock buffers if load becomes excessive for clock source.  
+		\end{itemize}
+
+		\begin{center}\includegraphics[width=0.35\textwidth]{images/ClockSkew.png}\end{center} 
+		\begin{center}\includegraphics[width=0.35\textwidth]{images/ClockSkewGoodBad.png}\end{center} 
+		
+		\subsubsection{Clock Jitter}
+		Clock jitter are small variations of a clock oscillators output transitions from their ideal positions. \\
+		Prevent it by: 
+		\begin{itemize}
+				\setlength{\itemsep}{-4pt}
+				\item Reduce noise and their coupling. 
+				\item Apply circuit partitioning shielding. 
+				\item Prevent crosstalk. 
+				\item Provide good signal return paths. 
+		\end{itemize}
+
+	\subsection{General Layout Guidelines}
+		See slides from Week 4 for further infos. 
+
