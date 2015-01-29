@@ -1,35 +1,196 @@
+% !TeX spellcheck = en_US
 \section{Highspeed Digital Design}
+\subsection{Time and distance}
+Some facts:
+\begin{itemize}
+	\item Time on a 10\,mm long wire on FR4:  \qquad $t=71$\,ps
+	\item Time of light from nose to the eye: \qquad $t=100$\,ps
+	\item Transmission line is a low pass: 1\,dB/dek.
+	\item Rise and fall time short as possible $\rightarrow$ hight frequency
+\end{itemize}
 
-\subsection{Timing Analysis}
-Goal: to check whether the timing specifications are met.
-
-\begin{table}[htbp]
-    \centering
-    \begin{tabularx}{0.8\linewidth}{lX}
-        static (STA) & calculates timing without simulations \\
-            & always covers extremes \\
-         dynamic & is a timing simulations \\
-             & may fail to find longest path \\
-    \end{tabularx}
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{|c|c|}
+		\hline
+		propagation delay &                                $\tau = \frac{\sqrt{\varepsilon}}{c}$ \quad $[\frac{s}{m}]$                                \\ \hline
+		effective length  & $ l_{\text{eff}} = \frac{\text{time duration}}{\text{propagation delay}} = \frac{t}{\tau} \qquad t:$\,z.B. rise/fall-Time \\ \hline
+		   Wire length    &                                       $l_{\text{wire}} > \frac{l_{\text{eff}}}{6}$                                        \\ \hline
+	\end{tabular}
 \end{table}
 
-Note that STA is not able to cover interfaces between different clock regions!
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.4\textwidth]{images/High_Speed_Digital/propDelay.jpg}
+	\caption{propagation delay}
+\end{figure}
 
+\subsection{Clock and clock free signaling}
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{|c|c|}
+		\hline
+		       \textbf{parallel signaling}         &              \textbf{serial signaling}              \\ \hline\hline
+		          many bits in parallel            & only one serial line; all bits onbe after the other \\ \hline
+		       lines for data must be sync         &  maximize clock speed, consider only one data line  \\ \hline
+		$\Delta$ in line length reduces throughput &              no skew (dt. Bitversatz)               \\ \hline
+		             lower throughput              &                  higher throughput                  \\ \hline
+		            z.B: ISA,ATA,SCSI              &               z.B:  RS-232, USB, I2C                \\ \hline
+	\end{tabular}
+\end{table}
+
+\subsubsection{Data rate}
+
+\begin{description}
+	\item [Bit rate:]\hfill \\
+		 Number of transmitted bit per seconds \quad $[\frac{\text{bit}}{s}]$
+	\item [Symbol rate:] \hfill \\
+		 Number of transmitted symbols per seconds \quad $[\frac{\text{symbols}}{s} = \text{baud}]$
+	\item [Channel capacity:] \hfill \\
+		 Shannon-Theorem \\
+		R : Information rate \quad $[\frac{\text{bit}}{s}]$\\
+		C : Channel capacity \quad $[\frac{\text{bit}}{s}]$\\
+		If $R<C$ then, exist a coding, which reduce the error rate by the receiving part close to zero.		
+\end{description}
+
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{|c|c|}
+		\hline
+		AWGN channel & $C = B \cdot \log_2 \left( 1 + \frac{S}{N} \right)$ \\ \hline
+	\end{tabular}
+\end{table}
+
+\subsubsection{Coding}
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{|c|l|c|}
+		\hline
+		\multicolumn{3}{|c|}{\textbf{No Coding}}                                                                                                                   \\ \hline
+		       Data        & \multicolumn{2}{|c|}{No-return-to-zero-coding (NRZ)}                                                                                  \\
+		                   & \multicolumn{2}{|c|}{1: Hight, 0: Low}                                                                                                \\
+		      Clock        & \multicolumn{2}{|c|}{Return-to-one (RTO) or Return-to-zero (RTZ)}                                                                     \\ \hline\hline
+		      
+		\multicolumn{3}{|c|}{\textbf{Manchester}}                                                                                                                  \\ \hline
+		        0          & high $\Rightarrow$ low transmission & \multirow{2}{*}{\includegraphics[width=0.25\textwidth]{images/High_Speed_Digital/Manchester-Code.pdf}} \\
+		        1          & low $\Rightarrow$ high transmission &  \\ \hline
+		\multicolumn{3}{|c|}{Clock recovery possible}                                                                                                              \\ \hline\hline
+		
+		\multicolumn{3}{|c|}{\textbf{CMI-Codieng (Code Mark Inversion)}}                                                                                           \\ \hline
+		        0          & high $\Rightarrow$ low transmission & \multirow{3}{*}{\includegraphics[width=0.25\textwidth]{images/High_Speed_Digital/CMI-Code.pdf}} \\
+		\multirow{2}{*}{1} & low \quad if before high            &  \\
+		                   & high \quad if before low            &  \\ \hline
+		\multicolumn{3}{|c|}{Clock recovery possible}                                                                                                              \\ \hline\hline
+		
+		\multicolumn{3}{|c|}{\textbf{Redundancy-Coding}}                                                                                                           \\ \hline
+		\multicolumn{3}{|c|}{Send more bits as necessary, for extra error detection and error correction}                                                          \\ \hline
+		\multicolumn{3}{|c|}{example: Hamming-Coding}                                                                                                              \\ \hline\hline
+		
+		\multicolumn{3}{|c|}{\textbf{Differential-Signaling}}                                                                                                      \\ \hline
+		\multicolumn{3}{|c|}{allows high speed by low signal voltage}                                                                                              \\ \hline
+		\multicolumn{3}{|c|}{No ground line necessary}                                                                                                             \\ \hline
+		\multicolumn{3}{|c|}{No common mode noise}                                                                                                                 \\ \hline
+		\multicolumn{3}{|c|}{example: LVDT (Low-Voltage-Differential-Signaling), PCI-Express}                                                                      \\ \hline\hline
+		
+		\multicolumn{3}{|c|}{\textbf{Multi-Level-Code [Quadrature-Amplitude-Modulation (QAM)]}}                                                                    \\ \hline
+		\multicolumn{3}{|c|}{Transmit of more then one bit per symbol \quad  $2^n$\,-QAM $\Rightarrow$ $n$ Bits}                                                   \\ \hline
+		\multicolumn{3}{|c|}{Used in wireless communication}                                                                                                       \\ \hline
+
+	\end{tabular}
+\end{table}
+
+\newpage
+\subsubsection{Clock-driven and clock-less signaling}
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{|c|c|}
+		\hline
+		\textbf{Clock-Driven Signaling} &             \textbf{Clock-Less Signaling}              \\ \hline\hline
+		Clock are separate transmitted  &         clock are contain in the data signals          \\ \hline
+		                                & clock must be recovered / restore from the data signal \\
+		                                &               Clock-Data-Recovery (CDR)                \\ \hline
+		      examples: I2C, DDR2       &                    example: USB 3.0                    \\ \hline
+	\end{tabular}
+\end{table}
+
+\subsubsection{Clock-Data-Recovery (CDR)}
+\begin{description}
+	\item [Goal:] \hfill \\
+		 Extract the clock-signal form the data-signal
+	\item [Method:] \hfill \\
+		 A Phase-Locked-Loop (PLL) controls the phase and the frequency. The data-signal are the reference (Soll-Wert). The easiest phase detector (Diskiminator) is a D-Flip-Flop. Other complex phase detector are:
+		\begin{itemize}
+			\item Hogge Phase-Detector
+			\item Alexander Phase-Detector
+			\item Half-Rate Phase-Detector
+			\item Quarter-Rate Phase-Detector
+			\item N-th R Phase-Detector:\\
+				If the date-rate is too high, so that the design of the VCO became to complex. In this case, the design complexity of the VCO can be reduced by divied the frequency to the factor $2^n$ and a $n$-th rate Phase-Detector are be used. 
+		\end{itemize}
+\end{description}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{images/High_Speed_Digital/PLL.pdf}
+	\caption{propagation delay}
+\end{figure}
+
+
+\subsection{Timing Analysis}
+\begin{description}
+	\item[Goal:] \hfill \\
+		To check whether the timing specifications are met. The timing analysis are used to check the component timing-specification so that they are respected (dt. eingehalten werden). To check that the system-coordination are works or correct (the component can problem-free communicate) , the timing-analysis can be used.
+\end{description}
+
+\newpage
+\subsubsection{Static TA vs. Dynamic TA}
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{|c|c|}
+		\hline
+		         \textbf{Static TA (STA)}          &             \textbf{Dynamic TA (DTA)}             \\ \hline\hline
+		calculates timing-path without simulations &                 timing simulation                 \\ \hline
+		   always covers extremes  (worst case)    &         may fail to find the longest path         \\ \hline
+		                                           & can simulate systems with different clock-regions \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{description}
+	\item[Note:] \hfill \\
+		The Static TA (STA) is not able to cover interfaces between different clock regions!
+\end{description}
+
+\subsubsection{Static Tining Analysis}
 \begin{multicols}{2}
     Consider four types of paths:
     \begin{enumerate}
-        \item clock-to-clock 
-        \item input-to-clock
-        \item clock-to-output
-        \item input-to-output
+        \item \textcolor{orange}{clock-to-clock}
+        \item \textcolor{green}{input-to-clock}
+        \item \textcolor{blue}{clock-to-output}
+        \item \textcolor{red}{input-to-output}
     \end{enumerate}
     \vfill
     \columnbreak
     \includegraphics[width=0.8\linewidth]{images/HSDigital_TimingAnalysis.jpg}
-    %TODO: draw nice picture in TikZ
+    %TODO: draw nice picture in TikZ (hmm... das chani leider nonig ;) )
 \end{multicols}
 
 Consider: minimum / maximum delays, dependence on voltage, temperature, process, load, edge (rising/falling)
+
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{|l|c|}
+		\hline
+		\textcolor{orange}{1. clock-to-clock} & $t_{\text{path}} \leq T_{\text{CLK}} + t_{\text{CLK} \rightarrow \text{FF2}} - t_{\text{CLK} \rightarrow \text{FF1}}$ \\ \hline
+		\textcolor{green}{2. input-to-clock}  &                           $t_{\text{path}} = t_{\text{comb-logik}} + t_{\text{setupFF1}} $                            \\
+		                                      &        $t_{\text{path}} \leq T_{\text{CLK}} + t_{\text{CLK} \rightarrow \text{FF1}} - t_{\text{input-delay}}$         \\ \hline
+		\textcolor{blue}{3. clock-to-output}  &                              $t_{\text{path}} = t_{\text{FF2}} + t_{\text{comb-logik}}$                               \\
+		                                      &        $t_{\text{path}} \leq T_{\text{CLK}} - t_{\text{CLK} \rightarrow \text{FF2}} - t_{\text{output-delay}}$        \\ \hline
+		\textcolor{red}{4. input-to-output}   &                                      $t_{\text{path}} = t_{\text{comb-logik}} $                                       \\
+		                                      &               $t_{\text{path}} \leq T_{\text{CLK}} - t_{\text{input-delay}} - t_{\text{output-delay}} $               \\ \hline
+		multi-clock-cycle-path                &                               Combinational logic needs longer then the one clock-cycle                               \\ \hline
+		false path                            &                            path exist physical, but it will not be used (no data transfer)                            \\ \hline
+	\end{tabular}
+\end{table}
 
 \paragraph{Clock-to-clock}The maximal path consists of 
 \begin{itemize}
@@ -49,10 +210,11 @@ Static timing analysis on base of a schematic assumes standard net lengths (a 2-
 
 %TODO: maybe add example?
 
+\subsubsection{Gate delays and wire delays}
 \paragraph{Delays}There exist two types of delay: \emph{gate} delays and \emph{wire} delays. \\
 \begin{table}[htbp]
     \centering
-    \begin{tabularx}{0.8\linewidth}{XX}
+    \begin{tabularx}{0.9\linewidth}{XX}
         Gate delays & Wire delays \\ \toprule
         \begin{circuitikz} \draw (0,0) node[not port] {} (1,0); \end{circuitikz}
         & \tikz[scale=0.5]{\draw (0,0)--(1,0)--(1,1)--(2,1) (1,0)--(1,-1)--(2,-1)--(2,-0.5)--(3,-0.5) (2,-1)--(2,-1.5)--(3,-1.5); \draw[fill=black] (1,0) circle (0.1) (2,-1) circle (0.1);}  \\
@@ -60,11 +222,16 @@ Static timing analysis on base of a schematic assumes standard net lengths (a 2-
         dependent on:  \newline
         - temperature (higher $\to$ higher delays)\newline
         - voltage (higher $\to$ lower delays)\newline
-        - technology, load, \dots
+        - load (higher $\to$ higher delays)\newline
+        - technology, \dots
         & dependent on:\newline
-        - length of wire \newline
-        - resistance, capacitance, inductance \newline
-        - low dependency on temperature \\
+        - length of wire (higher $\to$ higher delays)\newline
+        - resistance of wire (higher $\to$ higher delays)\newline
+        - temperature (higher $\to$ higher delays)\newline
+        - low dependency on temperature \newline
+        - capacitance, inductance, \dots \newline
+        - low dependency on temperature \newline
+        \textbf{influences are not significant!!!}\\
         \bottomrule
     \end{tabularx}
 \end{table}
@@ -82,7 +249,8 @@ Solution: e.g. define \emph{clock enable} signal and latch only e.g. every fourt
     \item Test logic, which would not run at full speed and is not optimized for speed.
 \end{itemize}
 
-\subsection{Timing Simulation}
+
+\subsubsection{Dynamic Timing Analysis}
 \paragraph{Cycle based simulation}
 Events only happen at clock edges, thus no delays are considered.
 Cycle based simulation is purely \emph{functional}.
@@ -90,6 +258,10 @@ Cycle based simulation is purely \emph{functional}.
 Assumes a standard delay, which leads to a simple model. Not very relevant.
 \paragraph{Prelayout timing simulation}
 Uses propagation times from data sheets and standard values.
+\begin{itemize}
+	\item delays for Gate  $\Rightarrow$ datasheet
+	\item delays from wire $\Rightarrow$ standard values
+\end{itemize}
 \paragraph{Postlayout timing simulation}
 Uses actual wire geometries, including parasitics.
 By far the slowest, but the only really accurate timing simulation.
