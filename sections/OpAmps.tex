@@ -183,17 +183,116 @@
 			\\
 			See also Slides 14 to 16 in OPAMP1 for further info about the cascode circuit. 
 
-	\subsubsection{Level Shifting}
-		Level shifting can be accomplished by either using Z-Diode or complementary transistors or very fancy circuit with current mirror. 
-		See pages 21 to 24 in OPAMP1 for further info. 
+		\subsubsection{Level Shifting}
+			Level shifting can be accomplished by either using Z-Diode or complementary transistors or very fancy circuit with current mirror. 
+			See pages 21 to 24 in OPAMP1 for further info. 
+			
+		\subsubsection{Darlington Transistor}
+			Advantages: \\
+			Strong increase of current gain and input resistance as compared to single transistor. 
+			See pages 27 in OPAMP1 for schematic. 
+			
+		\subsubsection{Supply Voltages}
+			Rail-To-Rail OPAMP do not have a dropout voltage, meaning their signals can reach the maximum and the minimum of the supply voltage. Normal OPAMPs do have a dropout voltage. \\
+			$\rightarrow$ Single Supply Amplifier LM324 see slide 31 of OPAMP1! \\
+			$\rightarrow$ Single Supply CMOS AMP slide 33 of OPAMP1\\
+			$\rightarrow$ Rail-To-Rail I/O OPAMP slide 35 of OPAMP1
+	
+	\subsection{Noise}
+		Noise signals are random signals. They are aperiodic, instantaneous values which can never be predicted. The signal to noise ratio is given by
+		\begin{equation}
+			\frac{S}{N} = \frac{rms signal voltage}{rms noise voltage}.
+		\end{equation}
+		\\
+		Noise can be characterized by histograms (e.g. Gauss curve) or power density spectra (e.g. uniform). In order to add independent random signals the following formula has to be used: 
+		\begin{equation}
+			E_{totalRMS} = \sqrt{e_{1RMS}^2 + e_{2RMS}^2 + ... + e_{nRMS}^2}
+		\end{equation}
+		\\
+		The spectral density of noise is given in units of $\frac{V_{rms}}{\sqrt{Hz}}$ or $\frac{A_{rms}}{\sqrt{Hz}}$, whereas the power spectral density is given in $\frac{V}{Hz}$ or $\frac{A}{Hz}$ referenced to a 1 $\Omega$ resistor. \\
+		\subsubsection{Corner Frequency in OPAMP noise}
+			The following plot shows an example for an input noise voltage. One can see that the noise is uniform above $f_{nc}$ and 1/f below that frequency. 
+			
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=0.45\textwidth]{images/NoiseExample.png}
+				\caption{Example for input noise voltage}
+				\label{Fig:NoiseExample}
+			\end{figure}
+			Example for computing the corner frequency $f_{nc}$:\\
+			Given a noise density of 130 $\frac{nV}{\sqrt{Hz}}$ at 10 Hz and a white noise density of 12 $\frac{nV}{\sqrt{Hz}}$. \\
+			On the 1/f noise power curve the product (frequency x noise power density is constant):\\
+			$\left[\left(\frac{130 nV}{\sqrt{Hz}}\right)^2 - \left(\frac{12 nV}{\sqrt{Hz}}\right)^2\right]\cdot 10Hz = 167'560 nV^2$\\
+			At $f_{nc}$ the noise power density is 12 $\frac{nV}{\sqrt{Hz}}$ $\rightarrow$ $\frac{167'560 nV^2}{\left(\frac{12nV}{\sqrt{Hz}}\right)^2} = 1164 Hz$
+	
+			Example for determining the total noise within a given bandwidth:\\
+			B = $f_{min}$ to $f_{max}$\\
+			Method: Noise voltage is root of noise power, therefore first integrate power and then determine the voltage. \\
+			$E_n = E_{whitenoise} \cdot \sqrt{f_{nc}\cdot \ln\left(\frac{f_{max}}{f_{min}}\right) + \left(f_{max}-f_{min}\right)}$\\
+		\subsubsection{Noise sources in non-inverting OPAMP}	
+			An real OPAMP has - next to other errors like bias and offsets - also noise sources. The different noise sources can be added with superposition, but be aware, that the different noise contributions will be added geometrically!\\
+			
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=0.65\textwidth]{images/NoiseSources.png}
+				\caption{Noise sources in a non-inverting amplifier}
+				\label{Fig:NoiseSources}
+			\end{figure}
+			The resistor noise is computed with the following formula, where $k = 1.38 \cdot 10^{-23} J/K$ is the Boltzmann constant. 
+			\begin{equation}
+				U_R = \sqrt{4kTR\left(f_{max}-f_{min}\right)}
+			\end{equation}
+		\subsubsection{Noise Voltage and Noise Number}
+			The noise number is calculated by
+			\begin{equation}
+				F = \left(\frac{U_{outRealAMP}}{U_{outIdealAMP}}\right)^2
+			\end{equation}	
+			
+			At low source resistance the input referred voltage noise dominate whereas at high $R_g$ the current noise dominates. 
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=0.75\textwidth]{images/NoiseSourceResistance.png}
+				\caption{Noise as a function of source resistance}
+				\label{Fig:NoiseSourceResistance}
+			\end{figure}
+			
+		\subsubsection{Voltage and current noise performances}
+			CMOS circuits tend to have less current but more voltage noise.\\
+			They also tend to have higher noise corner frequencies.  
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=0.75\textwidth]{images/VoltageCurrentNoise.png}
+				\caption{Noise performance of voltage and current}
+				\label{Fig:VoltageCurrentNoise}
+			\end{figure}
+			
+		\subsubsection{Auto-Zero Principle}
+			Measure input offset and subtract it from input in order to cancel low frequency noise density increase. 
+			The measured offset is stored in a capacitor, which discharge must be much slower than the offset measurement period $T_{AZ}$ $\rightarrow$ $RC >> T_{AZ}$! 
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=0.35\textwidth]{images/AutoZeroPrinzip.png}
+				\caption{Auto-Zero Principle}
+				\label{Fig:AutoZeroPrinzip}
+			\end{figure}
+			\\
+			There is the possibility of open-loop or closed-loop cancellation, where in the closed-loop cancellation the offset is stored on a floating capacitor which is more precise in switched capacitor circuits. For the schematic of the closed- and open-loop cancellation please refer to slide 16 in OPAMP2. \\
+			\textbf{Disdvantage of auto-zeroing} is that during the measurement the principal function of the circuit is not operating. However, two parallel amp stages avoid this problem, where the null amp measures the offset of the main amp online. See slide 17 in OPAMP2 for schematic. 
+			
+		\subsubsection{Chopper Amp}
+			The chopper amp is used for amplifying weak DC and low-frequency signals. The principle is that the given signal is chopped and modulated to a higher frequency where it is amplified and downconverted again to the lower frequency, this principle helps to avoid the disturbing 1/f noise in the low frequency area. 
+			
+			\begin{table}[h!]
+				\centering
+				\begin{tabular}{m{0.45\textwidth} m{0.35\textwidth} }
+					
+					\begin{center}\includegraphics[width=0.35\textwidth]{images/ChopperAmp.png}\end{center} 
+				&
+							
+					\begin{center}\includegraphics[width=0.35\textwidth]{images/Chopperrauschen.png}\end{center} 
+				\\
+			
+				\end{tabular}
+			\end{table}			
 		
-	\subsubsection{Darlington Transistor}
-		Advantages: \\
-		Strong increase of current gain and input resistance as compared to single transistor. 
-		See pages 27 in OPAMP1 for schematic. 
-		
-	\subsubsection{Supply Voltages}
-		Rail-To-Rail OPAMP do not have a dropout voltage, meaning their signals can reach the maximum and the minimum of the supply voltage. Normal OPAMPs do have a dropout voltage. \\
-		$\rightarrow$ Single Supply Amplifier LM324 see slide 31 of OPAMP1! \\
-		$\rightarrow$ Single Supply CMOS AMP slide 33 of OPAMP1\\
-		$\rightarrow$ Rail-To-Rail I/O OPAMP slide 35 of OPAMP1
+	
