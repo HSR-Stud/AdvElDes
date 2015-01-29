@@ -266,16 +266,82 @@ Uses propagation times from data sheets and standard values.
 Uses actual wire geometries, including parasitics.
 By far the slowest, but the only really accurate timing simulation.
 
-\subsection{Clock Distribution Schemes}
+\subsubsection{Clock Distribution Schemes}
 
 \paragraph{Common-clock distribution timing}
-Common (third-party) clock used by driver and receiver. OK for up to \SI{200}{\mega\hertz}. 
+\begin{itemize}
+	\item Common (third-party) clock used by driver and receiver.
+	\item  OK for up to \SI{200}{\mega\hertz}.
+\end{itemize} 
 
-\paragraph{Source synchronous / Incident}
-Driver sends clock and data. 
-Source synchronous: driver delays data slightly. 
-Incident clocking: receiver delays data.
+\paragraph{Source synchronous clocking}
+\begin{itemize}
+	\item Driver sends clock and data
+	\item Driver delays data slightly.
+\end{itemize}
+
+\paragraph{Incident synchronous}
+\begin{itemize}
+	\item Driver send data and clock at the same time
+	\item Receiver delayed the data signal.
+\end{itemize}
+
 
 \paragraph{Embedded clocking}
-Clock is embedded in data (e.g. Manchester coding).
-Saving on number of lines, but increase of frequency.
+\begin{itemize}
+	\item Clock is embedded in data (e.g. Manchester coding).
+	\item Data and clock have the same delay
+	\item Receiver recover the clock from the data-signal, and control the delay itself.
+\end{itemize}
+
+\subsection{Clock-Signal}
+\begin{description}
+	\item[Time-Slack] \hfill \\
+		$\bullet$ reserve of the path-time $\geq$ 0 \\
+		$\bullet$ available path-time minus used path-time 
+		
+	\item[Jitter] \hfill \\
+		$\bullet$ fast variation or fluctuations of the clock frequency \\
+		$\bullet$ different between real and ideal clock edge \\
+		$\bullet$ Superposition of noise from other signals \\ (example: Thermal-, Amplifier-, Power-supply-, PLL-control noise)
+		
+	\item[Skew] \hfill \\
+		$\bullet$ different between fastest and lowest arrival time of the clock-signal at different receivers.\\
+		$\bullet$ caused by different lengths of lines.
+\end{description}
+\newpage
+\subsubsection{Clock-signal properties}
+The clock-signal should be have the following properties
+
+\begin{description}
+	\item[Monoton], to prohibit double clocks. \\
+		$\Rightarrow$ Oscillation will be produced by reflection on the load or source. \\
+		$\Rightarrow$ Critical are reflection on the load $\rightarrow$ double clocks
+		
+	\item[Fast], to reduce the uncertainty (dt. Unsicherheit) of the clock-edge position. \\
+		$\Rightarrow$ ideal rectangle \\
+		$\Rightarrow$ but, faster the edge, then more likely to Ringing ($\rightarrow$ double clocks) 
+	
+	\item[High fan out driver], to increase the clock-edge. \\
+		$\bullet$ Clock-driver are the most loaded signal
+		
+	\item[Low Jitter], to increase the time-sack on a single receiver. \\
+	    $\bullet$ receiver can be a Flip Flop. \\
+		$\bullet$ \textbf{Clock-Jitter reduce the clock-periode}
+		
+	\item[Low Skew], to increase the time-sack on more then one single receiver. \\
+		$\bullet$ \textbf{Clock-Skew reduce the clock-periode}
+\end{description}
+
+\textbf{\textcolor{red}{A reduction of the Clock-Jitter, increments the Clock-Skew}}
+\begin{equation*}
+	\boxed{
+	\text{Jitter} \sim \frac{1}{\text{Skew}}
+	}
+\end{equation*} 
+
+\subsubsection{Clock-Skew}
+
+\subsubsection{Clock-Jitter}
+
+\subsection{Power Consumption}
