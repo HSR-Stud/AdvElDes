@@ -295,4 +295,88 @@
 				\end{tabular}
 			\end{table}			
 		
-	
+	\subsection{Amplifier Types}
+		\subsubsection{Transconductance Amplifier - VC Amp}
+			This voltage controlled amplifier converts a differential voltage on its input into a proportional current on the output. In contrary to normal OPAMPs the OTA (operational transconductance amp) has a high impedance output, meaning that the output voltage depends mainly on the given load. 
+			The gain is given by the equation below, where $U_a$ is the output voltage, $U_D$ is the differential voltage, $R_a$ is the external load resistor and $g_m$ is the conductance of the amplifier. 
+			\begin{table}[h!]
+				\centering
+				\begin{tabular}{m{0.45\textwidth} m{0.35\textwidth} }
+					
+					\begin{equation}
+						G = \frac{U_a}{U_D} = R_a g_m
+					\end{equation}		
+				&
+							
+					\begin{center}\includegraphics[width=0.25\textwidth]{images/OTA.png}\end{center} 
+				\\
+			
+				\end{tabular}
+			\end{table}
+			\\
+			Applications: \\
+			\begin{itemize}
+				\setlength{\itemsep}{-4pt}
+				\item Realization of analog filters without ohmic resistance
+				\item Coax line driver (the high output resistance helps to avoid reflections)
+				\item Etc.
+			\end{itemize}			
+			
+		\subsubsection{Transimpedance Amplifier - CV Amp}
+			This current controlled amplifier converts an input current into an equivalent voltage on the output. The formula below gives the gain of the transimpedance amp, where $Z$ is the transimpedance and $r_s$ is the output resistance at negative input.  
+			\begin{table}[h!]
+				\centering
+				\begin{tabular}{m{0.75\textwidth}}
+					
+					\begin{equation}
+						G = \frac{U_a}{U_D} = \frac{Z}{r_s}
+					\end{equation}	
+
+				\\
+							
+					\begin{center}\includegraphics[width=0.55\textwidth]{images/TransimpedanceOPAMPModell.png}\end{center} 
+				\\
+			
+				\end{tabular}
+			\end{table}
+			\\
+			Applications: \\
+			\begin{itemize}
+				\setlength{\itemsep}{-4pt}
+				\item Measurement of very small currents (for instance photo currents), it is possible to measure in the nano ampere range
+				\item As voltage follower or as a compensation for the low pass behaviour of loop gain
+			\end{itemize}
+			
+		\subsubsection{Current Amplifier - CC Amp}
+			This amplifier - also called diamond transistor - acts like an ideal bipolar transistor, it has a low ohmic inverting current input and a high ohmic current output. The collector current is equal to the emitter current, whereas the base input resistance is high, the emitter input resistance is low and the collector output resistance is high. \\
+			However there are some differences to a normal transistor, the collector current is - as mentioned before - inverted, $U_{BE} = 0$, the operating point is defined internally and the emitter and collector currents can flow in both directions.  
+			\begin{table}[h!]
+				\centering
+				\begin{tabular}{m{0.75\textwidth}}
+					
+					\begin{equation}
+						G = \frac{R}{r_s+R_E}
+					\end{equation}	
+
+				\\
+							
+					\begin{center}\includegraphics[width=0.55\textwidth]{images/CurrentAmp.png}\end{center} 
+				\\
+			
+				\end{tabular}
+			\end{table}
+			\\
+			Applications: \\
+			\begin{itemize}
+				\setlength{\itemsep}{-4pt}
+				\item Emitter Coupling : Emitter circuit followed by collector circuit to avoid influence of load on gain (see slide 12 in OPAMP3).
+				\item Collector Coupling: No idea... but if you connect the collector with the emitter you get twice the output current which is nice (but half the output resistance) (see slide 13 in OPAMP3).
+				\item Base Coupling: Can be used in order to add or subtract signals (see slide 14 in OPAMP3).
+				\item Difference amplifier with two current amps: Get a high bandwidth precision rectifier (slide 15).
+				\item Gyrator: Dual of a transformer (slide 16).
+				\item Integrator: Build a non inverting integrator with a high upper frequency limit (slide 17).
+				\item Second order band-/low-pass filter (slide 18).
+				\item Active Termination: The power dissipation in the feedback resistor is reduced compared with a VC amplifier (slide 18).
+			\end{itemize}
+
+			
