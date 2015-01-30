@@ -170,7 +170,7 @@ Some facts:
     \end{enumerate}
     \vfill
     \columnbreak
-    \includegraphics[width=0.8\linewidth]{images/HSDigital_TimingAnalysis.jpg}
+    \includegraphics[width=0.7\linewidth]{images/High_Speed_Digital/HSDigital_TimingAnalysis.jpg}
     %TODO: draw nice picture in TikZ (hmm... das chani leider nonig ;) )
 \end{multicols}
 
@@ -197,12 +197,14 @@ Consider: minimum / maximum delays, dependence on voltage, temperature, process,
     \item $t_{PCQ}$: max. clock-to-output delay of flip-flop
     \item $t_{NET}$: max. data path between flip-flops
     \item $t_{SETUP}$: max. data setup time to clock of second flip-flop 
+    \item $t_{CLK(1)}$: min. delay of the clock signal of the first flip-flop
+    \item $t_{CLK(2)}$: max. delay of the clock signal of the second flip-flop
 \end{itemize}
 
 Static timing analysis on base of a schematic assumes standard net lengths (a 2-pin net is assumed to be shorter than a 3-pin net, etc.).
 
 \begin{multicols}{2}
-    \input{tikz/HSDigital_TimingClock.tex} \\
+    \includegraphics[width=0.9\linewidth, height=0.5\linewidth]{images/High_Speed_Digital/clock-to-clock.jpg} \\
     \vfill
     \columnbreak
     The maximal path must be shorter than the clock period (plus the delay from the clock source to the second flip-flop, minus the delay from the clock source to the first flip-flop)
@@ -295,21 +297,42 @@ By far the slowest, but the only really accurate timing simulation.
 \end{itemize}
 
 \subsection{Clock-Signal}
-\begin{description}
-	\item[Time-Slack] \hfill \\
-		$\bullet$ reserve of the path-time $\geq$ 0 \\
-		$\bullet$ available path-time minus used path-time 
-		
-	\item[Jitter] \hfill \\
-		$\bullet$ fast variation or fluctuations of the clock frequency \\
-		$\bullet$ different between real and ideal clock edge \\
-		$\bullet$ Superposition of noise from other signals \\ (example: Thermal-, Amplifier-, Power-supply-, PLL-control noise)
-		
-	\item[Skew] \hfill \\
-		$\bullet$ different between fastest and lowest arrival time of the clock-signal at different receivers.\\
-		$\bullet$ caused by different lengths of lines.
-\end{description}
-\newpage
+\begin{tabbing}
+	\hspace{10mm} \= \hspace{5mm} \= \\
+	\textbf{Time-Slack}	 \hfill \\
+						\>$\bullet$ \> reserve of the path-time $\geq$ 0 \\
+						\>$\bullet$ \>available path-time minus used path-time 
+\end{tabbing}
+	
+\begin{multicols}{2}
+	\begin{tabbing}
+	\hspace{10mm} \= \hspace{5mm} \= \\
+	\textbf{Jitter}\hfill \\
+						\>$\bullet$ \> fast variation or fluctuations of the clock frequency \\
+						\>$\bullet$ \> different between real and ideal clock edge \\
+						\>$\bullet$ \> Superposition of noise from other signals \\
+		 				\> \>(example: Thermal-, Amplifier-, Power-supply-, PLL-control noise)
+	\end{tabbing}
+	\vfill
+	\columnbreak
+	\hspace{40mm}
+	\includegraphics[width=0.3\linewidth]{images/High_Speed_Digital/Jitter.pdf}
+\end{multicols}
+	
+\begin{multicols}{2}
+	\begin{tabbing}
+		\hspace{10mm} \= \hspace{5mm} \= \\
+		\textbf{Skew} \hfill \\
+						\>$\bullet$ \> different between fastest and lowest arrival time of\\
+						\> \> the clock-signal at different receivers.\\
+						\>$\bullet$ \> caused by different lengths of lines.
+	\end{tabbing}
+	\vfill
+	\columnbreak
+	\hspace{40mm}
+	\includegraphics[width=0.35\linewidth]{images/High_Speed_Digital/Skew.pdf}
+\end{multicols}
+
 \subsubsection{Clock-signal properties}
 The clock-signal should be have the following properties
 
@@ -323,25 +346,175 @@ The clock-signal should be have the following properties
 		$\Rightarrow$ but, faster the edge, then more likely to Ringing ($\rightarrow$ double clocks) 
 	
 	\item[High fan out driver], to increase the clock-edge. \\
-		$\bullet$ Clock-driver are the most loaded signal
+		$\Rightarrow$ Clock-driver are the most loaded signal
 		
 	\item[Low Jitter], to increase the time-sack on a single receiver. \\
-	    $\bullet$ receiver can be a Flip Flop. \\
-		$\bullet$ \textbf{Clock-Jitter reduce the clock-periode}
+	    $\Rightarrow$ receiver can be a Flip Flop. \\
+		$\Rightarrow$ \textbf{Clock-Jitter reduce the clock-periode}
 		
 	\item[Low Skew], to increase the time-sack on more then one single receiver. \\
-		$\bullet$ \textbf{Clock-Skew reduce the clock-periode}
+		$\Rightarrow$ \textbf{Clock-Skew reduce the clock-periode}
 \end{description}
 
 \textbf{\textcolor{red}{A reduction of the Clock-Jitter, increments the Clock-Skew}}
 \begin{equation*}
-	\boxed{
-	\text{Jitter} \sim \frac{1}{\text{Skew}}
-	}
+	\boxed{\text{Jitter} \sim \frac{1}{\text{Skew}}}
 \end{equation*} 
 
 \subsubsection{Clock-Skew}
+\begin{description}
+	\item[The path-delay must be smaller than the clock-period] \hfill \\
+		\fcolorbox{orange}{orange}{$t_{\text{path}} < T_{\text{CLK}} + t_{\text{skew}}$}
+		\begin{multicols}{2}
+			if $t_{\text{path}} > T_{\text{CLK}} + t_{\text{skew}}$: \\
+			$\bullet$ increase clock-period $T_{\text{CLK}}$ $\Rightarrow$ $f_{\text{CLK}}$ will be smaller\\
+			$\bullet$ increase delay to FF2 ($t_{\text{skew}}$ will be bigger).\\
+			$\bullet$ use faster flip-flop for FF1 (faster technology.)\\
+			$\bullet$ manually clock roting from first to the last flip-flop.
+			\vfill
+			\columnbreak
+			\hspace{5mm}
+			\includegraphics[width=1\linewidth]{images/High_Speed_Digital/Clock-Skew.pdf}
+		\end{multicols}
+		
+	\item[clock-skew must be smaller than the shortest path-delay] \hfill \\
+		\fcolorbox{orange}{orange}{$t_{\text{skew}} < \min \left( {t_{\text{path}}} \right)$} \\ \\
+		otherwise goes the the input of FF1 ($D_{\text{FF1}}$) a clock-cycle after the output of FF2 ($Q_{\text{FF2}}$)\\
+		$\bullet$ problem gets worse at faster technology $\Rightarrow$ switch to slower technology\\
+		$\bullet$ reduce clock-delay of FF2 $\Rightarrow$ slower $t_{\text{skew}}$ \\
+		$\bullet$ manually clock roting from first to the last flip-flop. \\
+		$\bullet$ use slower flip-flop for FF1 \\
+		$\bullet$ insert a buffer between FF1 and FF2	
+\end{description}
 
 \subsubsection{Clock-Jitter}
+\begin{itemize}
+	\item PLL clock-generator produce Clock-Jitter
+	\item Clock-Jitter spread the clock-frequency-spectrum
+	\begin{itemize}
+		\item $\Rightarrow$  Clock-Jitter can be improve by filtering
+		\item Clock-Divider: Jitter $\approx$ 200\,fs $\ldots$ 250\,fs
+		\item LC-Bandpass-Filter: Jitter $\approx$ 100\,fs
+		\item Crystal-Filter: Jitter $\approx$ 50\,fs
+	\end{itemize}
+	\item Clock-Jitter are consciously (dt. bewusst, absichtlich) add, to reduce power-peaks
+	\item In Analog-Digital-Converter, Clock-Jitter lead to Jitter-Noise (Sample-Time-Noise)
+\end{itemize}
 
+\begin{equation*}
+	\boxed{\text{SNR} = -20 \log_{10} \left( 2 \pi f T_j \right) \qquad T_j: \text{RMS of the Jitter aperture}}
+\end{equation*}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.2\textwidth]{images/High_Speed_Digital/Jitter-Aperture.pdf}
+	\caption{Jitter-Aperture}
+\end{figure}
 \subsection{Power Consumption}
+\subsubsection{Where is the Energy dissipated}
+\begin{description}
+	\item[Load and discharge of the capacity (at each clock-edge)] \hfill \\
+		\fcolorbox{orange}{orange}{$E_{\text{CK}} = \frac{1}{2} C_k \cdot U_{\text{DD}}^2$}   \quad $C_k \approx C_{\text{gate}} + C_{\text{wire}}$; \quad $E_{\text{CK}} \sim \text{swich-frequency}$ \quad $E_{\text{CR}} \sim C_k$
+		
+	\item[Transistor switching ] \hfill \\
+		\fcolorbox{orange}{orange}{$E_{\text{CR}} = \frac{\beta}{12} \left( U_{\text{DD}} - 2\cdot U_{text{th}}\right)^3 \cdot t_{\text{rak}}$}   \quad $\beta$: gain; \quad $t_{\text{rak}}$: ramp-time;  \quad $U_{text{th}}$: threshold-voltage; \\\\ \quad $E_{\text{CK}} \sim \text{swich-frequency}$ \quad $E_{\text{CK}} \sim$ slowness of the slope
+
+	\item[Static current through resistor] \hfill \\
+		\fcolorbox{orange}{orange}{$P_{\text{RR}} = \frac{U_{\text{DD}}^2}{R}$}   \quad $P_{\text{RR}} \sim U_{\text{DD}}^2$; \quad $P_{\text{RR}} \sim \frac{1}{R} = G$\\\\
+		example: Pull-Up, Pull-Down Resistor, amplifier $\ldots$
+		
+	\item[Leakage current] \hfill \\
+		$\bullet$ current increase with rising temperature (self-reinforcing, (dt. selbst verstärkend)) \\
+		$\bullet$ frequency independent
+\end{description}
+
+\subsubsection{Why must be reduce Power Consumption}
+\begin{tabbing}
+	\hspace{10mm} \= \hspace{5mm} \= \\
+	\textbf{General trend}	 \hfill \\
+						\>$\bullet$ \>increase life time of the battery \\
+						\>$\bullet$ \>smaller and lighter devices \\
+							     \> \>$\rightarrow$ smaller batteries \\
+							     \> \>$\rightarrow$ smaller cooling system \\
+						\>$\bullet$ \>use new energy sources 
+\end{tabbing}
+
+\begin{tabbing}
+	\hspace{10mm} \= \hspace{5mm} \= \\
+	\textbf{increase life time of the electrical component}	 \hfill \\
+						\>$\bullet$ \>heat reduce the life time \\
+						\>$\bullet$ \>if less hot, then less cooling necessary
+\end{tabbing}
+
+\begin{tabbing}
+	\hspace{10mm} \= \hspace{5mm} \= \hspace{30mm} \=\\
+	\textbf{Temperature limit of the electronic component}	 \hfill \\
+						\>$\bullet$ \>the component works correctly only in a definition temperature range \\
+						\>$\bullet$ \>if less hot, then less cooling necessary \\
+							     \> \>$\rightarrow$ Commercial: \> $0^\circ\text{C}$ $\ldots$ $70^\circ\text{C}$ \\
+							     \> \>$\rightarrow$ Industrial: \> $-40^\circ\text{C}$ $\ldots$ $80^\circ\text{C}$\\
+							     \> \>$\rightarrow$ Military:   \> $-55^\circ\text{C}$ $\ldots$ $125^\circ\text{C}$ \\
+\end{tabbing}
+
+\begin{tabbing}
+	\hspace{10mm} \= \hspace{5mm} \= \\
+	\textbf{Popcorn-Effect in poor storage}	 \hfill \\
+						\>$\bullet$ \>Moisture inside plastic package causes explosion of package \\
+						\>$\bullet$ \>No problem with ceramic packages (but ceramic packages are much more expensive!)
+\end{tabbing}
+
+\begin{tabbing}
+	\hspace{10mm} \= \hspace{5mm} \= \\
+	\textbf{Temperature density on PCB}	 \hfill \\
+						\>$\bullet$ \>Different component temperature $\rightarrow$ deformation of the PCB \\
+						\>$\bullet$ \>heating of the neighbor devices
+\end{tabbing}
+	
+	
+\newpage
+\subsubsection{Current consumption calculation}
+The current consumption consist off:
+\begin{description}
+	\item[Static current consumption (leaked current)] \hfill \\
+		\fcolorbox{orange}{orange}{$P_S = \sum\limits_{i=1}^{n} I_{\text{leak}} \cdot U_{\text{supply}}$ \quad if $n=1$ $\Rightarrow$ $P_S = U_{\text{CC}} \cdot I_{\text{CC}} $ }  
+		
+	\item[Dynamic current consumption] \hfill \\
+		\begin{description}
+			\item[$\bullet$ Transient power (Gate-Switching)] \hfill \\
+				\fcolorbox{orange}{orange}{$P_T = C_{\text{pd}} \cdot U_{\text{CC}}^2 \cdot f_{\text{in}} \cdot N_{\text{SW}}$} 
+				%TODO MSP430 Beispiel hinzufügen
+				
+			\item[$\bullet$ Capacity-Load-Power (Output-Switching)] \hfill \\
+				\fcolorbox{orange}{orange}{$P_L = \sum\limits_{i=1}^{N_{\text{SW}}} C_{\text{L}_i} \cdot f_{\text{out}_i} \cdot U_{\text{CC}}^2 $} 
+		\end{description}	
+	\item[Total current consumption] \hfill \\
+		\fcolorbox{orange}{orange}{$P_{\text{TOT}} = P_S + P_T + P_L$} 
+		\begin{tabbing}
+			\hspace{10mm} 			\= \hspace{5mm} \= \\
+				$U_{\text{CC}}$: 	\>Supply voltage \\
+				$U_{\text{CC}}$: 	\>Supply voltage \\
+				$I_{\text{CC}}$: 	\>Leaked current (dt. Kriechstrom) $\Rightarrow$ from datasheet \\
+				$C_{\text{pd}}$: 	\>Power Dissipation Capacity $\Rightarrow$ from datasheet  \\
+				$C_{\text{L}}$:  	\>External Load Capacity ($C_{\text{wire}} + C_{\text{input}}$)  \\
+				$f_{\text{in}}$: 	\>input frequency (Clock or Data)  \\
+				$f_{\text{out}}$: 	\>output signal frequency (Data) \\
+				$N_{\text{SW}}$:	\> Number of (output) bits switching
+		\end{tabbing}
+ 
+\end{description}
+
+
+\subsubsection{How to reduce Power Consumption}
+\begin{tabbing}
+	\hspace{10mm} \= \hspace{5mm} \= \\
+						\>$\bullet$ \>reduce power-supply-voltage \\
+						\>$\bullet$ \>chose low-power technology \\
+						\>$\bullet$ \>use sleep and power-save modus \\
+						\>$\bullet$ \>reduce operation frequency \\
+						\>$\bullet$ \>reduce calculation effort (dt. Aufwand)\\
+						\>$\bullet$ \>reduce chip-to-chip communication or chose a other interface type (for example: LVDT)  \\
+						\>$\bullet$ \>optimize system architecture, for example: use internal memory \\
+						\>$\bullet$ \>Latch based design. Replace flip-flop with Latches (Latch = half flip-flop) \\
+						\>$\bullet$ \>Clock-Gating: Use different clock-region $\Rightarrow$ Every region have the clock that it necessary. \\
+						\>$\bullet$ \>Power-Gating: Power off the region, which are not used. \\				
+\end{tabbing}
