@@ -4,12 +4,13 @@
 Resolution: $N$ bits \\
 $Code = \frac{U_{IN}}{U_{FS}} \cdot 2^N$ / $U_{IN} = Code \cdot \frac{U_{FS}}{2^N}$ / $U_{FS} = U_{ref}$ (Single ended) / $U_{FS} = 2 \cdot U_{ref}$ (Differential)\\
 $U_{LSB} = q = \frac{U_{FS}}{2^N}$\\
-Full scale: $(2^N-1) \approx 2^N$ (Important for SNR, just valid if $N>>1$)
+Maximum input single ended: $(2^N-1) q \approx 2^N q$\\
+Maximum input differential: $\pm \frac{(2^N-1)}{2} q \approx \pm\frac{2^N}{2} q$ (Important for SNR, just valid if $N>>1$)
 
 \subsection{Noise}
 Signal to noise: $SNR = \frac{P_{signal}}{P_{noise}}$ / $SNR_{db} = 10 \cdot \log(\frac{P_{signal}}{P_{noise}}) = 20 \cdot \log(\frac{U_{signal}}{U_{noise}})$\\
 Noise due quantization: $U_{N,RMS} = \frac{q}{\sqrt{12}}$ \\
-Full scale sine signal: $U_{S,RMS} = \frac{(2^N-1) q}{2\sqrt{2}} \approx \frac{2^N q}{2 \sqrt{2}}$ \\
+Full scale sine signal: $U_{S,RMS} = \frac{(2^N-1)}{2} q \frac{1}{\sqrt{2}} \approx \frac{2^N q}{2 \sqrt{2}}$ \\
 Signal to noise due quantization assuming full scale sine input: $SNR \approx \frac{3}{2} 2^{2N}$ / $SNR_{db} \approx 1.76 + N \cdot 6.02$\\
 Distortion (Based on Fourier series): In: $A_1 \sin(\omega t)$ Out: $A_1 \sin(\omega t) + A_2 \sin(2 \omega t) + \hdots$ $\rightarrow$ $\text{THD} = \sqrt{\frac{A_1^2}{A_2^2 + A_3^2 + \hdots}}$\\
 Singnal to noise and distortion: $SINAD_{db} = 10 \cdot \log\left(\frac{A_1^2}{P_{noise} + A_2^2 + A_3^2 + \hdots}\right)$\\
