@@ -3,7 +3,8 @@
 \subsection{Basics}
 Resolution: $N$ bits \\
 $Code = \frac{U_{IN}}{U_{FS}} \cdot 2^N$ / $U_{IN} = Code \cdot \frac{U_{FS}}{2^N}$ / $U_{FS} = U_{ref}$ (Single ended) / $U_{FS} = 2 \cdot U_{ref}$ (Differential)\\
-$U_{LSB} = q = \frac{U_{FS}}{2^N}$
+$U_{LSB} = q = \frac{U_{FS}}{2^N}$\\
+Full scale: $(2^N-1) \approx 2^N$ (Important for SNR, just valid if $N>>1$)
 
 \subsection{Noise}
 Signal to noise: $SNR = \frac{P_{signal}}{P_{noise}}$ / $SNR_{db} = 10 \cdot \log(\frac{P_{signal}}{P_{noise}}) = 20 \cdot \log(\frac{U_{signal}}{U_{noise}})$\\
@@ -131,10 +132,11 @@ Many ADC's have differential inputs. There are also differential opamp's to crea
 
 \subsection{Sampling}
 Normally, sampling is done using a Nyquist conversion: $f_s \geq 2f_{hi}$ If the signal is band limited on a high frequency, also undesampling is possible: $f_s \geq 2(f_{hi}-f_{lo})$\\
-If the signal is band limited, noise can be removed by bandpass filtering the signal after the converter resulting in a higher $SNR_{db} = 1.76 + N \cdot 6.02 + 10 \cdot \log(\frac{f_s}{2 \cdot BW}) $\\
+If the signal is band limited, noise can be removed by bandpass filtering the signal after the converter resulting in a higher $SNR_{db} \approx 1.76 + N \cdot 6.02 + 10 \cdot \log(\frac{f_s}{2 \cdot BW}) $\\
 
 \subsection{Oversampling}
-Oversampling is done by sampling the signal faster than necessary: $f_s \geq OSR \cdot 2f_{hi}$ and then lowpass filtering the signal removing noise resulting in a higher $SNR_{db} = 1.76 + N \cdot 6.02 + 10 \cdot \log(OSR) $\\
+Oversampling is done by sampling the signal faster than necessary: $f_s \geq OSR \cdot 2f_{hi}$ and then lowpass filtering the signal removing noise resulting in a higher $SNR_{db} \approx 1.76 + N \cdot 6.02 + 10 \cdot \log(OSR) $\\
+
 Using oversampling and noise shaping (Sigma-Delta conversion) the SNR is future reduced. The signal power for a full scale sine is $U_{S,RMS} = \frac{q}{2\sqrt{2}}$ due $N = 1$.\\
 
 \begin{tabular}{m{6cm} m{5cm} m{5cm}}
