@@ -428,3 +428,9 @@
 			angle=90,
 			page=10
 			]{images/Elo2_Kap2_Grundschaltungen_des_BT.pdf}
+
+	\subsection{Transfer Function Basics}
+		$f_c = \frac{1}{2 \pi T} = \frac{\omega_0}{2\pi}$ / $\omega_0 = \frac{1}{T}$\\
+		PT1: $\frac{1}{1 + sT} = \frac{\omega_0}{\omega_0 + s}$\\
+		PT2: $\frac{1}{1 + 2sDT + s^2T^2} = \frac{\omega_0^2}{\omega_0^2 + s\frac{\omega_0}{Q} + s^2}$ where $D = \zeta$ is the damping factor and $Q$ the quality factor.\\
+		Overshoot (step response) if $D \leq 1$ / Peaking (bode diagram) if $D \leq 0.707$ / $D = \frac{1}{2Q}$
