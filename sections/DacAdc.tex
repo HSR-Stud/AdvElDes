@@ -86,3 +86,81 @@ Binary: No monotonicity guaranteed but needs just $N$ elements!
 		angle=0
 		]{images/DacAdc/r_2r} \\ 
 \end{tabular}
+
+\subsection{ADC}
+\includegraphics[
+	width=8cm,
+	keepaspectratio,
+	angle=0
+	]{images/DacAdc/samp_res} \\ 
+	
+\begin{tabular}{m{5cm} m{5cm}}
+ 	Flash: Fast 100M-1G / \quad High power / 6-8 Bits & Pipeline: Fast 1M-500M / High power / 8-12 Bits  \\ 
+	\includegraphics[
+		width=5cm,
+		keepaspectratio,
+		angle=0
+		]{images/DacAdc/flash} & 
+	\includegraphics[
+		width=5cm,
+		keepaspectratio,
+		angle=0
+		]{images/DacAdc/pipelined}\\ 
+		
+	SAR: Medium 100K-10M / Medium power / 8-16 Bits & Sigma-Delta: Slow 10-100K / Low power / 14-24 Bits \\ 
+	\includegraphics[
+		width=5cm,
+		keepaspectratio,
+		angle=0
+		]{images/DacAdc/sar} & 
+	\includegraphics[
+		width=5cm,
+		keepaspectratio,
+		angle=0
+		]{images/DacAdc/sigma_delta}\\ 
+
+\end{tabular}
+
+Many ADC's have differential inputs. There are also differential opamp's to create the differential signals:
+\includegraphics[
+		width=0.5\textwidth,
+		keepaspectratio,
+		angle=0
+		]{images/DacAdc/diff_amp}
+
+\subsection{Sampling}
+Normally, sampling is done using a Nyquist conversion: $f_s \geq 2f_{hi}$ If the signal is band limited on a high frequency, also undesampling is possible: $f_s \geq 2(f_{hi}-f_{lo})$\\
+If the signal is band limited, noise can be removed by bandpass filtering the signal after the converter resulting in a higher $SNR_{db} = 1.76 + N \cdot 6.02 + 10 \cdot \log_{10}(\frac{f_s}{2 \cdot BW}) $\\
+
+\newpage
+\subsection{Oversampling}
+Oversampling is done by sampling the signal faster than necessary: $f_s \geq OSR \cdot 2f_{hi}$ and then lowpass filtering the signal removing noise resulting in a higher $SNR_{db} = 1.76 + N \cdot 6.02 + 10 \cdot \log_{10}(OSR) $\\
+Using oversampling and noise shaping (Sigma-Delta conversion) the SNR is future reduced:\\
+
+\begin{tabular}{m{6cm} m{5cm} m{5cm}}
+ 	Principle & 1 Bit 1. Order & 1 Bit 2. Order \\ 
+	\includegraphics[
+			width=6cm,
+			keepaspectratio,
+			angle=0
+			]{images/DacAdc/oversampling} & 
+	\includegraphics[
+			width=5cm,
+			keepaspectratio,
+			angle=0
+			]{images/DacAdc/sigma_delta} &
+	\includegraphics[
+			width=5cm,
+			keepaspectratio,
+			angle=0
+			]{images/DacAdc/sigma_delta_2ord} \\ 
+\end{tabular}
+
+%The formulas in the presentation are basicaly wrong, it is not (2*pi)^2 but 2 * pi^2 and so on...
+\begin{tabular}{|c|c|c|c|c|}
+\hline Order & 1 & 2 & 3 & L \\ 
+\hline $\frac{N(z)}{E(z)}$ & $1-z^{-1}$ & $(1-z^{-1})^2$ & $(1-z^{-1})^3$ & $(1-z^{-1})^L$ \\ 
+\hline Base-band noise voltage $n_0$ & $\frac{U_{LSB} \pi}{\sqrt{36}} \left( \frac{1}{OSR} \right)^{3/2} $ & $\frac{U_{LSB} \pi^2}{\sqrt{60}} \left( \frac{1}{OSR} \right)^{5/2}$ & $\frac{U_{LSB} \pi^3}{\sqrt{84}} \left( \frac{1}{OSR} \right)^{7/2} $ & $\frac{U_{LSB} \pi^L}{\sqrt{12(2L+1)}} \left( \frac{1}{OSR} \right)^{(2L+1)/2}$ \\ 
+\hline SNR (Not in db!) & $\frac{9 \cdot OSR^3}{2\pi^2}$ & $\frac{15 \cdot OSR^5}{2\pi^4}$ & $\frac{21 \cdot OSR^7 }{2\pi^6}$ & $\frac{3}{2} \cdot \frac{(2L+1) \cdot OSR^{(2L+1)}}{\pi^{2L}}$  \\ 
+\hline 
+\end{tabular} 
