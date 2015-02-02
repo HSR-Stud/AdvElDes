@@ -3,11 +3,11 @@
 \subsection{Basics}
 Resolution: $N$ Bits \\
 $Code = \frac{U_{IN}}{U_{FS}} \cdot 2^N$ / $U_{IN} = Code \cdot \frac{U_{FS}}{2^N}$ / $U_{FS} = U_{ref}$ (Single ended) / $U_{FS} = 2 \cdot U_{ref}$ (Differential)\\
-$U_{LSB} = \frac{U_{FS}}{2^N}$
+$U_{LSB} = q = \frac{U_{FS}}{2^N}$
 
 \subsection{Noise}
 Signal to Noise: $SNR_{db} = 10 \cdot \log_{10}(\frac{P_{signal}}{P_{noise}}) = 20 \cdot \log_{10}(\frac{U_{signal}}{U_{noise}})$\\
-Noise due Quantization: $U_{N,RMS} = \frac{U_{LSB}}{\sqrt{12}}$\\
+Noise due Quantization: $U_{N,RMS} = \frac{q}{\sqrt{12}}$\\
 Signal to Noise due Quantization assuming full scale sine input: $SNR_{db} = 1.76 + N \cdot 6.02$\\
 Distortion (Based on Fourier series): In: $A_1 \sin(\omega t)$ Out: $A_1 \sin(\omega t) + A_2 \sin(2 \omega t) + \hdots$ $\rightarrow$ $\text{THD} = \sqrt{\frac{A_1^2}{A_2^2 + A_3^2 + \hdots}}$\\
 Singnal-to-Noise and Distortion: $SINAD_{db} = 10 \cdot \log_{10}\left(\frac{A_1^2}{P_{noise} + A_2^2 + A_3^2 + \hdots}\right)$\\
@@ -160,7 +160,7 @@ Using oversampling and noise shaping (Sigma-Delta conversion) the SNR is future 
 \begin{tabular}{|c|c|c|c|c|}
 \hline Order & 1 & 2 & 3 & L \\ 
 \hline $\frac{N(z)}{E(z)}$ & $1-z^{-1}$ & $(1-z^{-1})^2$ & $(1-z^{-1})^3$ & $(1-z^{-1})^L$ \\ 
-\hline Base-band noise voltage $n_0$ & $\frac{U_{LSB} \pi}{\sqrt{36}} \left( \frac{1}{OSR} \right)^{3/2} $ & $\frac{U_{LSB} \pi^2}{\sqrt{60}} \left( \frac{1}{OSR} \right)^{5/2}$ & $\frac{U_{LSB} \pi^3}{\sqrt{84}} \left( \frac{1}{OSR} \right)^{7/2} $ & $\frac{U_{LSB} \pi^L}{\sqrt{12(2L+1)}} \left( \frac{1}{OSR} \right)^{(2L+1)/2}$ \\ 
+\hline Base-band noise voltage $n_0$ & $\frac{q \pi}{\sqrt{36}} \left( \frac{1}{OSR} \right)^{3/2} $ & $\frac{q \pi^2}{\sqrt{60}} \left( \frac{1}{OSR} \right)^{5/2}$ & $\frac{q \pi^3}{\sqrt{84}} \left( \frac{1}{OSR} \right)^{7/2} $ & $\frac{q \pi^L}{\sqrt{12(2L+1)}} \left( \frac{1}{OSR} \right)^{(2L+1)/2}$ \\ 
 \hline SNR (Not in db!) & $\frac{9 \cdot OSR^3}{2\pi^2}$ & $\frac{15 \cdot OSR^5}{2\pi^4}$ & $\frac{21 \cdot OSR^7 }{2\pi^6}$ & $\frac{3}{2} \cdot \frac{(2L+1) \cdot OSR^{(2L+1)}}{\pi^{2L}}$  \\ 
 \hline 
 \end{tabular} 
