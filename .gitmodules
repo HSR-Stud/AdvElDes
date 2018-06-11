@@ -1,4 +1,0 @@
-[submodule "header"]
-	path = header
-	url = https://github.com/HSR-Stud/header.git
-	branch = header2.0
